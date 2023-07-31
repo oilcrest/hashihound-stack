@@ -9,7 +9,11 @@ RUN apk update && \
     apk add --no-cache --update ansible libffi-dev py-netaddr openssh sshpass zip
 # Initialize
 RUN mkdir -p /etc/ansible
+RUN mkdir -p /inventory
 RUN mkdir -p /playbooks
+RUN echo 'eval "$(ssh-agent)"' > /root/.ashrc
+RUN echo 'cat /inventory/.ssh/id_rsa | ssh-add -' >> /root/.ashrc
+ENV ENV="/root/.ashrc"
 WORKDIR /playbooks
 
 # RUN

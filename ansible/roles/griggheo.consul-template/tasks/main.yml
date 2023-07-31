@@ -1,4 +1,0 @@
----
-# tasks file for consul-template
-- include: install.yml
-- include: service.yml

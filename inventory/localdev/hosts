@@ -1,0 +1,36 @@
+---
+
+all:
+  hosts:
+  children:
+    consul_instances:
+      hosts:
+        node01:
+          consul_node_role: bootstrap
+        node[02:03]:
+          consul_node_role: both
+        node[04:05]:
+          consul_instances: client
+    nomad_instances:
+      hosts:
+        node01:
+          nomad_node_role: bootstrap
+        node[02:03]:
+          nomad_node_role: both
+        node[04:05]:
+          nomad_node_role: client
+    vault_instances:
+      hosts:
+        node[01:04]:
+    docker_instances:
+      hosts:
+        node[01:03]:
+          nomad_node_role: both
+        node[04:05]:
+          nomad_node_role: client
+    traefik_instances:
+      hosts:
+        node01:
+    cephfs_instances:
+      hosts:
+        node[01:05]:

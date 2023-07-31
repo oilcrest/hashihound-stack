@@ -1,0 +1,18 @@
+// Copyright (c) 2023 Hidden Hound Security LLC.
+// 
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+ff00::0	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+
+192.168.0.141 node01
+192.168.0.142 node02
+192.168.0.143 node03
+192.168.0.144 node04
+192.168.0.145 node05
+

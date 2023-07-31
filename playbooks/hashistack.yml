@@ -1,88 +1,17 @@
-#TODO: add headers
-#TODO: remove vars from this an dmove to the vars file.
-#TODO: Test whenable. 
-
-- hosts: consul_instances
-  become: true
+---
+- hosts: all
+  become: yes
   become_user: root
-  roles:
-      - {role: brianshumate.consul, tags: ['consul']}
-  vars:
-      # VARIABLES TO EDIT
-      consul_iface: eth0
-      consul_datacenter: "windsor"
-      consul_acl_datacenter: "windsor"
-      consul_domain: "consul"
-      consul_recursors: ['8.8.8.8', '8.8.4.4']
-      # CONSTANTS
-      consul_client_address: "0.0.0.0"
-      consul_dnsmasq_enable: yes
-      consul_acl_master_token_display: yes
-      vault_azurekeyvault: no
+  gather_facts: false
+  tasks:
+    - name: Ensure updated
+      raw: apk update
+    - name: Ensure Python and pip are installed
+      raw: apk add python2 py2-pip
 
-- hosts: vault_instances
-  become: true
+- hosts: all
+  become: yes
   become_user: root
+  gather_facts: true
   roles:
-      - {role: brianshumate.vault, tags: ['vault']}
-  vars:
-      # VARIABLES TO EDIT
-      vault_iface: eth0
-      vault_datacenter: "windsor"
-      vault_domain: "consul.corp.hiddenhound.com"
-      # CONSTANTS
-      vault_ui: yes
-      vault_cluster_disable: no
-
-
-- hosts: docker_instances
-  become: true
-  become_user: root
-  roles:
-      - {role: geerlingguy.docker, tags: ['docker']}
-      - {role: brianshumate.nomad, tags: ['docker', 'nomad']}
-  vars:
-      # VARIABLES TO EDIT
-      nomad_datacenter: "windsor"
-      nomad_domain: "consul"
-      nomad_iface: eth0
-      nomad_network_interface: eth0
-      nomad_servers: ['server01.node.lab.consul:4647']
-      # CONSTANTS
-      nomad_consul_address: http://127.0.0.1:8500
-      nomad_vault_address: http://active.vault.service.lab.consul:8200
-      nomad_bind_address: "0.0.0.0"
-      nomad_use_consul: yes
-      nomad_vault_enabled: yes
-      nomad_options: {  'driver.raw_exec.enable': '1' }
-      nomad_network_speed: 10
-      nomad_bootstrap_expect: 1
-      nomad_docker_enable: yes
-      permanent: yes
-      nomad_ports_http: 4646
-      nomad_ports_rpc: 4647
-      nomad_ports_serf: 4648
-
-
-- hosts: traefik_instances
-  become: true
-  become_user: root
-  ignore_errors: True
-  post_tasks:
-    - name: Copy Traefik Config File
-      template:
-        src: /playbooks/apps/traefik/traefik.toml
-        dest: /etc/traefik.toml
-    - name: Copy Traefik init script
-      template:
-        src: /playbooks/apps/traefik/traefik_debianinit.j2
-        dest: /etc/init.d/traefik
-        owner: root
-        group: root
-        mode: 0755
-  roles:
-       - {role: kibatic.traefik, tags: ['docker', 'nomad', 'traefik']}
-  vars:
-      # VARIABLES TO EDIT
-      traefik_bind_ip: "192.168.0.111"
-      traefik_consul_master: "consul.service.lab.consul"
+    - {role: robertdebock.core_dependencies, tags: ['alpine']}

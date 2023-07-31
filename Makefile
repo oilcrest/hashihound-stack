@@ -6,24 +6,30 @@
 
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-_local-dev:
+_vagrant-up:
 	vagrant up
 
-_kill-local-dev:
-	vagrant destroy -f --parallel
-
-_builder-setup:
+build-docker:
 	docker build -t ansibleworker:1.0 ansible/
-	docker run --rm  -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-galaxy install --roles-path /etc/ansible/roles -r /etc/ansible/requirements.yml
+	docker run --rm -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-galaxy install --roles-path /etc/ansible/roles -r /etc/ansible/requirements.yml
 
-prod-run: _builder-setup
-	docker run --rm  -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-playbook hashistack.yml
+prod-run: build-docker
+	docker run --rm -v ${ROOT_DIR}/inventory/prod/:/inventory/ -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-playbook hashistack.yml
 
-prod-restart: _builder-setup
-	docker run --rm  -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-playbook restart.yml
+prod-restart: build-docker
+	docker run --rm -v ${ROOT_DIR}/inventory/prod/:/inventory/ -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-playbook restart.yml
 
-localdev-run: _builder-setup
-	docker run --rm  -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-playbook hashistack.yml
+localdev-up: _vagrant-up build-docker
 
-localdev-restart: _builder-setup
-	docker run --rm  -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks ansibleworker:1.0 ansible-playbook restart.yml
+localdev-fullrun: localdev-up localdev-run
+
+localdev-run: 
+	docker run --rm -v ${ROOT_DIR}/vagrant-hostfile:/etc/hosts -v ${ROOT_DIR}/inventory/localdev/:/inventory/ -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks -v ${ROOT_DIR}/vagrant-hostfile:/etc/hosts ansibleworker:1.0 ansible-playbook hashistack.yml
+
+localdev-fullshell: localdev-up localdev-shell
+
+localdev-shell: 
+	docker run -it --rm -v ${ROOT_DIR}/vagrant-hostfile:/etc/hosts -v ${ROOT_DIR}/inventory/localdev/:/inventory/ -v ${ROOT_DIR}/ansible:/etc/ansible -v ${ROOT_DIR}/playbooks:/playbooks -v ${ROOT_DIR}/vagrant-hostfile:/etc/hosts ansibleworker:1.0
+
+localdev-down:
+	vagrant destroy -f --parallel
