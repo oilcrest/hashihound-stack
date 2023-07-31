@@ -1,3 +1,5 @@
+#TODO: This has issues assigning the correct IPs to the instances. Fix that.
+
 domain   = 'test.hiddenhound.com'
 AutoNetwork.default_pool = '192.168.0.0/24'
 

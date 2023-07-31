@@ -1,3 +1,6 @@
+#TODO: add a header
+#TODO: update to include the correct organization.
+
 node01.corp.hiddenhound.com ansible_host=10.20.0.31
 node02.corp.hiddenhound.com ansible_host=10.20.0.32
 node03.corp.hiddenhound.com ansible_host=10.20.0.33

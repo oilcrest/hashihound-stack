@@ -3,8 +3,4 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#TODO: Update this to include the correct information to connect with the vagrant instances.
-
-node01
-node02
-node03
+# TODO: Remove this once there are files here.

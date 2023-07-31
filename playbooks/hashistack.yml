@@ -1,3 +1,7 @@
+#TODO: add headers
+#TODO: remove vars from this an dmove to the vars file.
+#TODO: Test whenable. 
+
 - hosts: consul_instances
   become: true
   become_user: root
