@@ -47,7 +47,7 @@
 - hosts: vault_instances
   become: true
   become_user: root
-  ignore_errors: yes
+  ignore_errors: true
   tasks:
   - name: Restart Vault Servers
     service:
@@ -60,7 +60,7 @@
 - hosts: docker_instances
   become: true
   become_user: root
-  ignore_errors: yes
+  ignore_errors: true
   vars:
     nomad_servers: "\
       {% set _nomad_servers = [] %}\
@@ -102,7 +102,7 @@
 - hosts: traefik_instances
   become: true
   become_user: root
-  ignore_errors: yes
+  ignore_errors: true
   tasks:
   - name: Restart Traefik
     service:

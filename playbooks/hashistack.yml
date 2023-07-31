@@ -5,11 +5,11 @@
       - {role: brianshumate.consul, tags: ['consul']}
   vars:
       # VARIABLES TO EDIT
-      consul_iface: eth1
-      consul_datacenter: "lab"
-      consul_acl_datacenter: "lab"
+      consul_iface: eth0
+      consul_datacenter: "windsor"
+      consul_acl_datacenter: "windsor"
       consul_domain: "consul"
-      consul_recursors: ['1.1.1.1', '1.0.0.1']
+      consul_recursors: ['8.8.8.8', '8.8.4.4']
       # CONSTANTS
       consul_client_address: "0.0.0.0"
       consul_dnsmasq_enable: yes
@@ -23,12 +23,12 @@
       - {role: brianshumate.vault, tags: ['vault']}
   vars:
       # VARIABLES TO EDIT
-      vault_iface: eth1
-      vault_datacenter: "lab"
-      vault_domain: "consul"
+      vault_iface: eth0
+      vault_datacenter: "windsor"
+      vault_domain: "consul.corp.hiddenhound.com"
       # CONSTANTS
       vault_ui: yes
-      vault_cluster_disable: yes
+      vault_cluster_disable: no
 
 
 - hosts: docker_instances
@@ -39,10 +39,10 @@
       - {role: brianshumate.nomad, tags: ['docker', 'nomad']}
   vars:
       # VARIABLES TO EDIT
-      nomad_datacenter: "lab"
+      nomad_datacenter: "windsor"
       nomad_domain: "consul"
-      nomad_iface: eth1
-      nomad_network_interface: eth1
+      nomad_iface: eth0
+      nomad_network_interface: eth0
       nomad_servers: ['server01.node.lab.consul:4647']
       # CONSTANTS
       nomad_consul_address: http://127.0.0.1:8500
