@@ -1,0 +1,46 @@
+node01.corp.hiddenhound.com ansible_host=10.20.0.31
+node02.corp.hiddenhound.com ansible_host=10.20.0.32
+node03.corp.hiddenhound.com ansible_host=10.20.0.33
+node04.corp.hiddenhound.com ansible_host=10.20.0.34
+node05.corp.hiddenhound.com ansible_host=10.20.0.35
+node06.corp.hiddenhound.com ansible_host=10.20.0.36
+node07.corp.hiddenhound.com ansible_host=10.20.0.37
+node08.corp.hiddenhound.com ansible_host=10.20.0.38
+stor01.corp.hiddenhound.com ansible_host=10.20.0.41
+stor02.corp.hiddenhound.com ansible_host=10.20.0.42
+
+[consul_instances]@
+node01.corp.hiddenhound.com consul_node_role=bootstrap
+node02.corp.hiddenhound.com consul_node_role=both
+node03.corp.hiddenhound.com consul_node_role=both
+node04.corp.hiddenhound.com consul_node_role=client
+
+
+[nomad_instances]@
+node01.corp.hiddenhound.com consul_node_role=bootstrap
+node02.corp.hiddenhound.com consul_node_role=both
+node03.corp.hiddenhound.com consul_node_role=both
+node04.corp.hiddenhound.com consul_node_role=client
+
+
+[vault_instances]
+node01.corp.hiddenhound.com
+node02.corp.hiddenhound.com
+node03.corp.hiddenhound.com
+node04.corp.hiddenhound.com
+
+[docker_instances]
+node01.corp.hiddenhound.com nomad_node_role=both
+node02.corp.hiddenhound.com nomad_node_role=both
+node03.corp.hiddenhound.com nomad_node_role=both
+node04.corp.hiddenhound.com nomad_node_role=client
+
+[traefik_instances]
+node01.corp.hiddenhound.com
+
+[nomad_deployer]
+node02.corp.hiddenhound.com
+
+[cephfs_instances]
+stor01.corp.hiddenhound.com
+stor02.corp.hiddenhound.com
