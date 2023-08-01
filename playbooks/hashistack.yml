@@ -9,9 +9,79 @@
     - name: Ensure Python and pip are installed
       raw: apk add python2 py2-pip
 
-- hosts: all
+- name: Bootstrap Alpine Hosts - common config
+  hosts: all
   become: yes
   become_user: root
-  gather_facts: true
-  roles:
-    - {role: robertdebock.core_dependencies, tags: ['alpine']}
+  tasks:
+
+    - name: Update System
+      import_role:
+        name: robertdebock.update
+
+    - name: Upgrade System
+      import_role:
+        name: robertdebock.upgrade
+
+    - name: bootstrap
+      import_role:
+        name: robertdebock.bootstrap
+    
+    - name: core_dependencies
+      import_role:
+        name: robertdebock.core_dependencies
+    
+    - name: common
+      import_role:
+        name: robertdebock.common
+      vars:
+        - common_nameservers: "{{nameservers}}"
+    
+    - name: Install Sysstat
+      import_role: 
+        name: robertdebock.sysstat
+
+    - name: Install Haveged
+      import_role: 
+        name: robertdebock.haveged
+
+    - name: Install Docker
+      import_role: 
+        name: robertdebock.docker
+      vars:
+        - docker_privileged_users:
+          - nomad
+
+    - name: Create Hashicorp Users
+      ansible.builtin.user:
+        name: "{{ item }}"
+      with_items:
+        - nomad
+        - consul
+        - vault
+
+    - name: Create /src/hashicorp
+      ansible.builtin.file:
+        path: /src/hashicorp
+        state: directory
+        mode: '0755'
+
+    - name: Download Hashicorp Products
+      ansible.builtin.get_url:
+        url: https://releases.hashicorp.com/{{ item.name }}/{{ item.version }}/{{ item.name }}_{{ item.version }}_linux_amd64.zip
+        dest: /src/hashicorp/
+        owner: "{{item.user}}"
+        checksum: sha256:https://releases.hashicorp.com/{{ item.name }}/{{ item.version }}/{{ item.name }}_{{ item.version }}_SHA256SUMS
+      with_items:
+        - { name: 'nomad', version: '1.6.1', user: nomad }
+        - { name: 'consul', version: '1.16.0', user: consul }
+        - { name: 'vault', version: '1.14.1' , user: vault }
+
+    - ansible.builtin.unarchive:
+        src: /src/hashicorp/{{ item.name }}_{{ item.version }}_linux_amd64.zip
+        dest: /usr/bin/
+        remote_src: yes
+      with_items:
+        - { name: 'nomad', version: '1.6.1', user: nomad }
+        - { name: 'consul', version: '1.16.0', user: consul }
+        - { name: 'vault', version: '1.14.1' , user: vault }

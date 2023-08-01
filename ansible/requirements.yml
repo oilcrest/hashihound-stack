@@ -1,3 +1,18 @@
-#TODO: check out all of these and see if they are current.
+---
 
-- src: robertdebock.core_dependencies
+- src: robertdebock.bootstrap 
+- src: robertdebock.core_dependencies 
+- src: robertdebock.common 
+- src: robertdebock.docker
+- src: robertdebock.update 
+- src: robertdebock.upgrade
+- src: robertdebock.sysstat
+- src: robertdebock.haveged
+- src: robertdebock.qemu
+- src: buluma.hashicorp
+
+
+
+
+
+
